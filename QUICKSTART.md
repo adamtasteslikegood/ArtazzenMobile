@@ -23,8 +23,8 @@ Select the `ArtazzenMobile` scheme and an iOS 17+ Simulator in Xcode, then run t
 ```sh
 swiftlint lint --strict --config .swiftlint.yml
 swift-format lint --recursive --strict --configuration .swift-format Sources Tests
-xcodebuild -scheme ArtazzenMobile-Package -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' test
-xcodebuild -scheme ArtazzenMobile-Package -destination 'generic/platform=iOS' build
+xcodebuild -scheme ArtazzenMobile -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' test
+xcodebuild -scheme ArtazzenMobile -destination 'generic/platform=iOS' build
 ```
 
 If the simulator name differs on your machine, replace it with one shown by `xcrun simctl list devices`.

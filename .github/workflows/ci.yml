@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Test package
-        run: xcodebuild -scheme ArtazzenMobile-Package -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' test
+        run: xcodebuild -scheme ArtazzenMobile -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' test
 
   build:
     name: Build
@@ -36,4 +36,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build package
-        run: xcodebuild -scheme ArtazzenMobile-Package -destination 'generic/platform=iOS' build
+        run: xcodebuild -scheme ArtazzenMobile -destination 'generic/platform=iOS' build
