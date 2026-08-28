@@ -13,7 +13,7 @@ ArtazzenMobile is a SwiftUI iOS 17+ Swift Package. `Sources/` contains the execu
 
 ## Required checks
 
-Pull requests and pushes to `main` run `.github/workflows/ci.yml`: SwiftLint, `swift-format`, XCTest on an iOS Simulator, and a generic iOS build. `.github/workflows/codeql.yml` runs advanced Swift CodeQL analysis on pull requests, pushes, and weekly. Dependabot checks GitHub Actions dependencies weekly.
+Pull requests and pushes to `main` run `.github/workflows/ci.yml`: strict SwiftLint, a `swift-format` diagnostic, XCTest on an iOS Simulator, and a generic iOS build. `.github/workflows/codeql.yml` runs advanced Swift CodeQL analysis on pull requests, pushes, and weekly. Dependabot checks GitHub Actions dependencies weekly.
 
 Run the same commands locally from [QUICKSTART.md](QUICKSTART.md) before opening a PR. Linux is not a supported build environment for this package.
 

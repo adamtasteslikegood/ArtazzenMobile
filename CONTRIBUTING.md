@@ -16,4 +16,4 @@ Describe the user-facing or maintenance change, include testing evidence, and ca
 
 ## Quality gates
 
-Pull requests to `main` run SwiftLint, `swift-format`, XCTest on an iOS Simulator, an iOS build, and CodeQL analysis. A PR is ready to merge only when those checks pass and review comments are resolved.
+Pull requests to `main` run strict SwiftLint, a `swift-format` diagnostic, XCTest on an iOS Simulator, an iOS build, and CodeQL analysis. A PR is ready to merge only when the gates pass and review comments are resolved; format diagnostics should be addressed for new or modified Swift code.
