@@ -1,0 +1,7 @@
+disabled_rules:
+  - force_unwrapping
+  - line_length
+
+excluded:
+  - .build
+  - DerivedData

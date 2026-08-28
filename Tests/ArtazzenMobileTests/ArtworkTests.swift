@@ -67,4 +67,31 @@ final class ArtworkTests: XCTestCase {
         XCTAssertFalse(artwork.aiGenerated)
         XCTAssertTrue(artwork.aiFields.isEmpty)
     }
+
+    func testImageURLFallsBackToRelativeStaticImagePath() throws {
+        let artwork = try JSONDecoder().decode(Artwork.self, from: sampleJSON)
+        let baseURL = URL(string: "https://example.com/")!
+
+        XCTAssertEqual(
+            artwork.imageURL(relativeTo: baseURL)?.absoluteString,
+            "https://example.com/static/images/test.jpg"
+        )
+    }
+
+    func testExplicitImageURLTakesPrecedence() throws {
+        let json = """
+        {
+            "filename": "test.jpg", "title": "", "description": "", "caption": "",
+            "tags": [], "artist": "", "copyright": "", "collection": "",
+            "status": "hidden", "ai_generated": false, "ai_fields": [],
+            "detected_at": 0, "url": "https://cdn.example.com/test.jpg"
+        }
+        """.data(using: .utf8)!
+        let artwork = try JSONDecoder().decode(Artwork.self, from: json)
+
+        XCTAssertEqual(
+            artwork.imageURL(relativeTo: URL(string: "https://example.com/")!)?.absoluteString,
+            "https://cdn.example.com/test.jpg"
+        )
+    }
 }
