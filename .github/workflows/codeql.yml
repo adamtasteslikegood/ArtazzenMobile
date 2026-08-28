@@ -25,9 +25,9 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: swift
-          build-mode: autobuild
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+          build-mode: manual
+      - name: Build for CodeQL
+        run: xcodebuild -scheme ArtazzenMobile -destination 'generic/platform=iOS' build
       - name: Analyze
         uses: github/codeql-action/analyze@v3
         with:
