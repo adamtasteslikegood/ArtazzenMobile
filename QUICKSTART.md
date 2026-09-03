@@ -12,6 +12,9 @@ ArtazzenMobile is a SwiftUI iOS 17+ Swift Package and requires macOS with Xcode.
 ```sh
 git clone https://github.com/adamtasteslikegood/ArtazzenMobile.git
 cd ArtazzenMobile
+# Match the versions CI uses (see .github/workflows/ci.yml). Plain `brew
+# install swiftlint swift-format` can drift into new default-on SwiftLint
+# rules that fail the strict gate; verify with `swiftlint version`.
 brew install swiftlint swift-format
 open Package.swift
 ```

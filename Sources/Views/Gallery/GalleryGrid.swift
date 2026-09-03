@@ -7,7 +7,7 @@ enum GalleryGrid {
         var body: some View {
             VStack(alignment: .leading, spacing: 6) {
                 AsyncImage(url: artwork.imageURL) { image in
-                    image.resizable().aspectRatio(contentMode: .fill)
+                    image.resizable().scaledToFill()
                 } placeholder: {
                     Rectangle().fill(Color.azCarbon.opacity(0.1))
                 }

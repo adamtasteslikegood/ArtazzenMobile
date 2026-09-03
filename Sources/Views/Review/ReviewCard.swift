@@ -6,7 +6,7 @@ struct ReviewCard: View {
     var body: some View {
         VStack(spacing: 0) {
             AsyncImage(url: artwork.imageURL) { image in
-                image.resizable().aspectRatio(contentMode: .fit)
+                image.resizable().scaledToFit()
             } placeholder: {
                 Rectangle().fill(Color.azCarbon.opacity(0.1))
                     .aspectRatio(4 / 5, contentMode: .fit)

@@ -15,8 +15,17 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - name: Install Swift tooling
-        run: brew install swiftlint swift-format
+      - name: Install Swift tooling (pinned versions)
+        run: |
+          # Pin exact tool versions. Unpinned `brew install` drifts as new
+          # releases enable default-on SwiftLint rules (e.g.
+          # legacy_swiftui_aspect_ratio in 0.65.0) and break the strict gate.
+          curl -fsSL -o /tmp/swiftlint.zip \
+            https://github.com/realm/SwiftLint/releases/download/0.65.1/portable_swiftlint.zip
+          unzip -q /tmp/swiftlint.zip -d /tmp/swiftlint-bin
+          echo "/tmp/swiftlint-bin" >> "$GITHUB_PATH"
+          brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/514328ad9ca0ff787a372efac065d3ad5aa87c9c/Formula/s/swift-format.rb
+          swiftlint version
       - name: SwiftLint
         run: swiftlint lint --strict --config .swiftlint.yml
       - name: swift-format

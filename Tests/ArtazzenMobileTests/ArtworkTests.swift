@@ -1,23 +1,24 @@
 import XCTest
+
 @testable import ArtazzenMobile
 
 final class ArtworkTests: XCTestCase {
     let sampleJSON = """
-    {
-        "filename": "test.jpg",
-        "title": "Test Artwork",
-        "description": "A test description",
-        "caption": "Test caption",
-        "tags": ["abstract", "botanical"],
-        "artist": "Test Artist",
-        "copyright": "© 2026",
-        "collection": "Test Collection",
-        "status": "approved",
-        "ai_generated": true,
-        "ai_fields": ["title", "description"],
-        "detected_at": 1718000000.0
-    }
-    """.data(using: .utf8)!
+        {
+            "filename": "test.jpg",
+            "title": "Test Artwork",
+            "description": "A test description",
+            "caption": "Test caption",
+            "tags": ["abstract", "botanical"],
+            "artist": "Test Artist",
+            "copyright": "© 2026",
+            "collection": "Test Collection",
+            "status": "approved",
+            "ai_generated": true,
+            "ai_fields": ["title", "description"],
+            "detected_at": 1718000000.0
+        }
+        """.data(using: .utf8)!
 
     func testDecode() throws {
         let artwork = try JSONDecoder().decode(Artwork.self, from: sampleJSON)
@@ -47,21 +48,21 @@ final class ArtworkTests: XCTestCase {
 
     func testPendingStatus() throws {
         let json = """
-        {
-            "filename": "pending.jpg",
-            "title": "",
-            "description": "",
-            "caption": "",
-            "tags": [],
-            "artist": "",
-            "copyright": "",
-            "collection": "",
-            "status": "pending",
-            "ai_generated": false,
-            "ai_fields": [],
-            "detected_at": 0
-        }
-        """.data(using: .utf8)!
+            {
+                "filename": "pending.jpg",
+                "title": "",
+                "description": "",
+                "caption": "",
+                "tags": [],
+                "artist": "",
+                "copyright": "",
+                "collection": "",
+                "status": "pending",
+                "ai_generated": false,
+                "ai_fields": [],
+                "detected_at": 0
+            }
+            """.data(using: .utf8)!
         let artwork = try JSONDecoder().decode(Artwork.self, from: json)
         XCTAssertEqual(artwork.status, .pending)
         XCTAssertFalse(artwork.aiGenerated)
@@ -80,13 +81,13 @@ final class ArtworkTests: XCTestCase {
 
     func testExplicitImageURLTakesPrecedence() throws {
         let json = """
-        {
-            "filename": "test.jpg", "title": "", "description": "", "caption": "",
-            "tags": [], "artist": "", "copyright": "", "collection": "",
-            "status": "hidden", "ai_generated": false, "ai_fields": [],
-            "detected_at": 0, "url": "https://cdn.example.com/test.jpg"
-        }
-        """.data(using: .utf8)!
+            {
+                "filename": "test.jpg", "title": "", "description": "", "caption": "",
+                "tags": [], "artist": "", "copyright": "", "collection": "",
+                "status": "hidden", "ai_generated": false, "ai_fields": [],
+                "detected_at": 0, "url": "https://cdn.example.com/test.jpg"
+            }
+            """.data(using: .utf8)!
         let artwork = try JSONDecoder().decode(Artwork.self, from: json)
 
         XCTAssertEqual(

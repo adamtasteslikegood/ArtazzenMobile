@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 import UIKit
 
 struct CaptureView: View {
@@ -14,7 +14,7 @@ struct CaptureView: View {
                 if let imageData, let uiImage = UIImage(data: imageData) {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .scaledToFit()
                         .frame(maxHeight: 300)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
 
@@ -43,7 +43,9 @@ struct CaptureView: View {
             }
             .onChange(of: selectedItem) { _, item in
                 Task {
-                    guard let data = try? await item?.loadTransferable(type: Data.self) else { return }
+                    guard let data = try? await item?.loadTransferable(type: Data.self) else {
+                        return
+                    }
                     imageData = data
                     isProcessing = true
                     // Upload would happen here via ArtazzenAPI

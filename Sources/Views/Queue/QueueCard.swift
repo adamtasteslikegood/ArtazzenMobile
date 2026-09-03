@@ -6,7 +6,7 @@ struct QueueCard: View {
     var body: some View {
         HStack(spacing: 12) {
             AsyncImage(url: artwork.imageURL) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
+                image.resizable().scaledToFill()
             } placeholder: {
                 Rectangle().fill(Color.azCarbon.opacity(0.1))
             }
