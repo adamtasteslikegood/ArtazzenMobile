@@ -1,0 +1,11 @@
+disabled_rules:
+  - force_unwrapping
+  - line_length
+  - identifier_name
+  - nesting
+  - non_optional_string_data_conversion
+  - trailing_comma
+
+excluded:
+  - .build
+  - DerivedData

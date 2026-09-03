@@ -7,7 +7,7 @@ struct ArtworkCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             AsyncImage(url: artwork.imageURL) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
+                image.resizable().scaledToFill()
             } placeholder: {
                 Rectangle().fill(Color.azCarbon.opacity(0.1))
             }
@@ -43,6 +43,7 @@ struct ArtworkCard: View {
         .padding(12)
         .background(Color.azParchment.opacity(0.5))
         .clipShape(RoundedRectangle(cornerRadius: 6))
-        .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.azCarbon.opacity(0.1), lineWidth: 1))
+        .overlay(
+            RoundedRectangle(cornerRadius: 6).stroke(Color.azCarbon.opacity(0.1), lineWidth: 1))
     }
 }
