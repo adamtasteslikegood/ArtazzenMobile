@@ -24,6 +24,9 @@ jobs:
             https://github.com/realm/SwiftLint/releases/download/0.65.1/portable_swiftlint.zip
           unzip -q /tmp/swiftlint.zip -d /tmp/swiftlint-bin
           echo "/tmp/swiftlint-bin" >> "$GITHUB_PATH"
+          # GITHUB_PATH only applies to later steps, so export PATH here too
+          # for the in-step version checks below.
+          export PATH="/tmp/swiftlint-bin:$PATH"
           # Homebrew 5.x rejects formulae outside a tap, so pull the pinned
           # swift-format bottle (603.0.0, arm64 sonoma) directly from ghcr.io.
           # The blob digest is the bottle sha256 from homebrew-core commit
@@ -33,6 +36,7 @@ jobs:
             "https://ghcr.io/v2/homebrew/core/swift-format/blobs/sha256:18229678d294ef981b9ecff8b943987a8088c484403915ba4c3c219fbc50dc43"
           tar -xzf /tmp/swift-format-bottle.tar.gz -C /tmp
           echo "/tmp/swift-format/603.0.0/bin" >> "$GITHUB_PATH"
+          export PATH="/tmp/swift-format/603.0.0/bin:$PATH"
           swiftlint version
           swift-format --version
       - name: SwiftLint
