@@ -14,7 +14,7 @@ Swift 5.9, SwiftUI-only (UIKit appears only for `PhotosPicker`/`UIImage` in Capt
 - `Sources/Services/ArtazzenAPI.swift` — `actor ArtazzenAPI` with Basic auth and one method per backend endpoint.
 - `Sources/Views/` — one `NavigationStack` per tab; Gallery and Queue push `ArtworkDetailView` via `navigationDestination(for: Artwork.self)` + `NavigationLink(value:)`.
 - `Sources/Components/` — `TagPill`, `StatusBadge`, `AIFieldEditor` (`AIFieldRow`), and `ArtworkCard` (currently unused).
-- `Tests/ArtazzenMobileTests/ArtworkTests.swift` — 5 tests covering `Artwork` JSON decode/encode.
+- `Tests/ArtazzenMobileTests/ArtworkTests.swift` — 5 tests covering `Artwork` JSON decode/encode and `imageURL(relativeTo:)` behavior.
 
 There is no ViewModel or `ObservableObject` layer. Views hold their own `@State`, and no view loads data from the network yet.
 
