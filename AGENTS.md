@@ -25,7 +25,7 @@ There is no ViewModel or `ObservableObject` layer. Views hold their own `@State`
 ## API contract notes
 
 - Auth: HTTP Basic from the `username`/`password` passed to `ArtazzenAPI.init`.
-- Endpoints: `GET /admin/api/new-files`, `POST admin/metadata/<filename>` (form-encoded), `POST /admin/ai/regenerate` (JSON), `POST /admin/upload` (multipart), `POST /admin/unapprove/<name>`, `POST /admin/delete/<name>`, `GET /admin/api/collections`, `GET /admin/config`.
+- Endpoints: `GET /admin/api/new-files`, `POST /admin/metadata/<filename>` (form-encoded), `POST /admin/ai/regenerate` (JSON), `POST /admin/upload` (multipart), `POST /admin/unapprove/<name>`, `POST /admin/delete/<name>`, `GET /admin/api/collections`, `GET /admin/config`.
 - Response shapes mirror the FastAPI backend in `ArtazzenDotCom`; preserve them unless the contract change is deliberate.
 - Inconsistency to be aware of: `saveMetadata` accepts status codes `200..<400`; every other call accepts `200..<300`.
 - `Artwork` JSON uses snake_case keys (`ai_generated`, `detected_at`, ...). `Artwork` equality and hashing are filename-only by design.
