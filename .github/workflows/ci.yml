@@ -24,7 +24,11 @@ jobs:
             https://github.com/realm/SwiftLint/releases/download/0.65.1/portable_swiftlint.zip
           unzip -q /tmp/swiftlint.zip -d /tmp/swiftlint-bin
           echo "/tmp/swiftlint-bin" >> "$GITHUB_PATH"
-          brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/514328ad9ca0ff787a372efac065d3ad5aa87c9c/Formula/s/swift-format.rb
+          # `brew install <url>` is rejected by modern Homebrew, so download
+          # the formula file and install it from disk (resolves the pinned bottle).
+          curl -fsSL -o /tmp/swift-format.rb \
+            https://raw.githubusercontent.com/Homebrew/homebrew-core/514328ad9ca0ff787a372efac065d3ad5aa87c9c/Formula/s/swift-format.rb
+          brew install /tmp/swift-format.rb
           swiftlint version
       - name: SwiftLint
         run: swiftlint lint --strict --config .swiftlint.yml
