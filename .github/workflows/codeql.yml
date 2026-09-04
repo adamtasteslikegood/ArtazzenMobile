@@ -22,13 +22,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: swift
           build-mode: manual
       - name: Build for CodeQL
         run: xcodebuild -scheme ArtazzenMobile -destination 'generic/platform=iOS' build
       - name: Analyze
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: /language:swift
