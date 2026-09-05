@@ -21,3 +21,6 @@ DerivedData/
 
 # logs
 *.log
+
+# Generated playground archives
+dist/

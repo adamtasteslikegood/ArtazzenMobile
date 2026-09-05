@@ -2,21 +2,21 @@
 
 ## Project
 
-ArtazzenMobile is a SwiftUI iOS 17+ Swift Package. `Sources/` contains the executable app, and `Tests/ArtazzenMobileTests/` contains XCTest coverage. The app consumes the Artazzen backend API; preserve the existing API shapes unless a change explicitly updates that contract.
+ArtazzenMobile is a SwiftUI iOS 17+ Swift Package. `Sources/Core/` contains the shared ArtazzenCore library; other `Sources/` files form the executable app, and `Tests/ArtazzenMobileTests/` contains XCTest coverage. The app consumes the Artazzen backend API; preserve the existing API shapes unless a change explicitly updates that contract.
 
 ## Codebase map
 
 Swift 5.9, SwiftUI-only (UIKit appears only for `PhotosPicker`/`UIImage` in CaptureView), no third-party dependencies.
 
-- `Sources/ArtazzenMobileApp.swift` — app entry; `WindowGroup` → `MainTabView`.
+- `Sources/ArtazzenMobileApp.swift` — app entry; `WindowGroup` → `MainTabView` with `AppSession` and dark-mode scheme.
 - `Sources/Views/MainTabView.swift` — `TabView` with 5 tabs: Queue, Review (swipe deck), Capture, Gallery, Settings. Global tint `Color.azTeal`.
-- `Sources/Models/` — `Artwork` (core model), `AIConfig`, `DesignTokens` (palette + fonts).
-- `Sources/Services/ArtazzenAPI.swift` — `actor ArtazzenAPI` with Basic auth and one method per backend endpoint.
+- `Sources/Core/` — `Artwork`, `AIConfig`, `AppSession`, and `Credentials`; palette/fonts remain in `Sources/Models/DesignTokens.swift`.
+- `Sources/Core/ArtazzenAPI.swift` — `actor ArtazzenAPI` with Basic auth and one method per backend endpoint.
 - `Sources/Views/` — one `NavigationStack` per tab; Gallery and Queue push `ArtworkDetailView` via `navigationDestination(for: Artwork.self)` + `NavigationLink(value:)`.
 - `Sources/Components/` — `TagPill`, `StatusBadge`, `AIFieldEditor` (`AIFieldRow`), and `ArtworkCard` (currently unused).
-- `Tests/ArtazzenMobileTests/ArtworkTests.swift` — 5 tests covering `Artwork` JSON decode/encode and `imageURL(relativeTo:)` behavior.
+- `Tests/ArtazzenMobileTests/ArtworkTests.swift` — decode/encode, relative image URLs, pending/gallery mapping, collections registry.
 
-There is no ViewModel or `ObservableObject` layer. Views hold their own `@State`, and no view loads data from the network yet.
+`AppSession` (`@Observable`) is the shared session: server URL, Basic auth, pending/gallery arrays, and ArtazzenAPI calls. Views still own local `@State` (search, filters, gestures). Settings edits remain drafts until Connect and Load. Passwords persist in Keychain per normalized server/account; UserDefaults holds non-secret preferences. Use package access across app/core targets. Request generations and mutation revisions protect against stale responses.
 
 ## Design system
 
@@ -25,24 +25,22 @@ There is no ViewModel or `ObservableObject` layer. Views hold their own `@State`
 ## API contract notes
 
 - Auth: HTTP Basic from the `username`/`password` passed to `ArtazzenAPI.init`.
-- Endpoints: `GET /admin/api/new-files`, `POST /admin/metadata/<filename>` (form-encoded), `POST /admin/ai/regenerate` (JSON), `POST /admin/upload` (multipart), `POST /admin/unapprove/<name>`, `POST /admin/delete/<name>`, `GET /admin/api/collections`, `GET /admin/config`.
+- Endpoints: `GET /admin/api/new-files`, `POST /admin/metadata/<filename>` (form-encoded), `POST /admin/ai/regenerate` (JSON), `POST /admin/upload` (multipart), `POST /admin/unapprove/<name>`, `POST /admin/delete/<name>`, `GET /admin/api/collections` (registry objects, not string arrays), `GET/POST /admin/config`.
 - Response shapes mirror the FastAPI backend in `ArtazzenDotCom`; preserve them unless the contract change is deliberate.
-- Inconsistency to be aware of: `saveMetadata` accepts status codes `200..<400`; every other call accepts `200..<300`.
+- Metadata saves accept 2xx or the backend's 303 confirmation without following its redirect; other calls require 2xx. Uploads also inspect saved/skipped/duplicates. AI requests use preview=true and decode wrapper identity separately from nested metadata.
 - `Artwork` JSON uses snake_case keys (`ai_generated`, `detected_at`, ...). `Artwork` equality and hashing are filename-only by design.
 
-## Current state — known gaps (verified 2026-09-02)
+## Current state (2026-09-05)
 
-The package builds and CI passes, but the app is a static UI shell. Verified findings:
+Prototype wiring landed: Settings stores server URL + Basic auth, `AppSession` loads the admin API, and dark mode applies `preferredColorScheme`. Remaining gaps:
 
-- `ArtazzenAPI` is never instantiated anywhere. Every "API call via ArtazzenAPI" comment in the views is a placeholder; no view loads, saves, uploads, or regenerates anything.
-- No server URL or credential configuration exists: no defaults, no settings fields. The app cannot reach the backend as written.
-- Every screen's data array (`pending`, `artworks`, `collections`) starts empty and is never populated.
-- The Dark Mode toggle writes `@AppStorage("az-dark-mode")`, but nothing reads it and no `preferredColorScheme` is applied, so it is a no-op.
-- `ArtworkCard` is dead code. `unapprove`, `delete`, `fetchConfig`, and `fetchCollections` on the API client have no callers.
-- `SwipeDeckView` approve/hide animate the top card and mutate local state only; nothing is sent to the backend.
+- Hide on the review deck is local-only (FastAPI has no hide endpoint).
+- `ArtworkCard` is unused. `unapprove` and `delete` still have no UI callers.
 - Custom fonts are not bundled (see Design system).
+- Actual iPad Playgrounds launch and Keychain persistence require device verification; CI builds alone cannot prove them.
+- Linux still cannot build this package. Visual QA needs Xcode, Simulator, or `Artazzen.swiftpm` in Swift Playgrounds.
 
-Treat any code that appears to perform networking or persistence as unverified until a wiring commit lands.
+`Artazzen.swiftpm` is the iPad Swift Playgrounds App Playground. It includes a contained ArtazzenCore target. Refresh it with `./scripts/export-playground.sh` after `Sources/` changes; `--check` detects drift. `./scripts/package-playground.sh` creates the document ZIP in ignored `dist/`.
 
 ## Conventions
 
@@ -60,7 +58,7 @@ Treat any code that appears to perform networking or persistence as unverified u
 
 ## Required checks
 
-Pull requests and pushes to `main` run `.github/workflows/ci.yml`: strict SwiftLint, a `swift-format` diagnostic, XCTest on an iOS Simulator, and a generic iOS build. `.github/workflows/codeql.yml` runs advanced Swift CodeQL analysis on pull requests, pushes, and weekly. Dependabot checks GitHub Actions dependencies weekly.
+Pull requests and pushes to `main` run `.github/workflows/ci.yml`: strict SwiftLint, a `swift-format` diagnostic, ArtazzenCore XCTest on an iOS Simulator, a generic iOS executable build, and a standalone playground build with source-drift validation and ZIP output. `.github/workflows/codeql.yml` runs advanced Swift CodeQL analysis on pull requests, pushes, and weekly. Dependabot checks GitHub Actions dependencies weekly.
 
 Run the same commands locally from [QUICKSTART.md](QUICKSTART.md) before opening a PR. Linux is not a supported build environment for this package.
 
