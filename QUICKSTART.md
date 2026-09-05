@@ -47,7 +47,7 @@ Prototype acceptance on iPad: connect and reload the deck; relaunch and confirm 
 ```sh
 swiftlint lint --strict --config .swiftlint.yml
 swift-format lint --recursive --strict --configuration .swift-format Sources Tests
-xcodebuild -scheme ArtazzenCore -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' test
+xcodebuild -scheme ArtazzenMobile-Package -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' test
 xcodebuild -scheme ArtazzenMobile -destination 'generic/platform=iOS' build
 (cd Artazzen.swiftpm && xcodebuild -scheme Artazzen -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build)
 ```

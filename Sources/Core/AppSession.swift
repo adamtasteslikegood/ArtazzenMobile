@@ -1,36 +1,40 @@
 import Foundation
 import Observation
 
-package enum SettingsStorage {
-    package static let serverURL = "az-server-url"
-    package static let username = "az-username"
+#if canImport(FoundationNetworking)
+    import FoundationNetworking
+#endif
+
+public enum SettingsStorage {
+    public static let serverURL = "az-server-url"
+    public static let username = "az-username"
     static let password = "az-password"
-    package static let darkMode = "az-dark-mode"
-    package static let defaultServerURL = "https://artazzen.com"
+    public static let darkMode = "az-dark-mode"
+    public static let defaultServerURL = "https://artazzen.com"
 }
 
 @MainActor
 @Observable
-package final class AppSession {
-    package var serverURLString: String
-    package var username: String
-    package var password: String
-    package private(set) var pending: [Artwork] = []
-    package private(set) var gallery: [Artwork] = []
-    package private(set) var collections: [CollectionSummary] = []
-    package var aiConfig = AIConfig.defaults {
+public final class AppSession {
+    public var serverURLString: String
+    public var username: String
+    public var password: String
+    public private(set) var pending: [Artwork] = []
+    public private(set) var gallery: [Artwork] = []
+    public private(set) var collections: [CollectionSummary] = []
+    public var aiConfig = AIConfig.defaults {
         didSet { configDirty = true }
     }
-    package private(set) var hasLoadedConfig = false
-    package private(set) var isLoading = false
-    package private(set) var isSavingConfig = false
-    package private(set) var mutations: Set<String> = []
-    package private(set) var previews: Set<String> = []
-    package private(set) var connectionID = UUID()
-    package var lastError: String?
-    package var lastMessage: String?
-    package private(set) var collectionsError: String?
-    package private(set) var configError: String?
+    public private(set) var hasLoadedConfig = false
+    public private(set) var isLoading = false
+    public private(set) var isSavingConfig = false
+    public private(set) var mutations: Set<String> = []
+    public private(set) var previews: Set<String> = []
+    public private(set) var connectionID = UUID()
+    public var lastError: String?
+    public var lastMessage: String?
+    public private(set) var collectionsError: String?
+    public private(set) var configError: String?
 
     private var connection: Connection?
     private let defaults: UserDefaults
@@ -42,10 +46,10 @@ package final class AppSession {
     private var revision = 0
     private var configDirty = false
 
-    package var hasCredentials: Bool { connection != nil }
-    package var activeServer: String? { connection?.baseURL.absoluteString }
+    public var hasCredentials: Bool { connection != nil }
+    public var activeServer: String? { connection?.baseURL.absoluteString }
 
-    package init(
+    public init(
         defaults: UserDefaults = .standard,
         credentialStore: any CredentialStore = KeychainCredentialStore(),
         transport: @escaping ArtazzenAPI.Transport = { try await ArtazzenAPI.send($0) }
@@ -81,7 +85,7 @@ package final class AppSession {
         } catch { lastError = error.localizedDescription }
     }
 
-    package func loadDraftPassword() {
+    public func loadDraftPassword() {
         password = ""
         guard
             let identity = try? Connection(
@@ -94,7 +98,7 @@ package final class AppSession {
         }
     }
 
-    package func connect() async {
+    public func connect() async {
         lastError = nil
         lastMessage = nil
         do {
@@ -127,7 +131,7 @@ package final class AppSession {
         )
     }
 
-    package func refresh() async {
+    public func refresh() async {
         guard mutations.isEmpty else { return }
         let generation = connectionID
         let request = UUID()
@@ -157,7 +161,7 @@ package final class AppSession {
         await retryConfig()
     }
 
-    package func retryCollections() async {
+    public func retryCollections() async {
         let generation = connectionID
         let request = UUID()
         collectionsRequest = request
@@ -172,7 +176,7 @@ package final class AppSession {
         }
     }
 
-    package func retryConfig() async {
+    public func retryConfig() async {
         guard !isSavingConfig else { return }
         let generation = connectionID
         let request = UUID()
@@ -195,11 +199,11 @@ package final class AppSession {
 
 extension AppSession {
     @discardableResult
-    package func approve(_ artwork: Artwork) async -> Bool {
+    public func approve(_ artwork: Artwork) async -> Bool {
         await save(artwork)
     }
 
-    package func hide(_ artwork: Artwork) {
+    public func hide(_ artwork: Artwork) {
         guard mutations.isEmpty else { return }
         revision += 1
         pending.removeAll { $0.filename == artwork.filename }
@@ -208,7 +212,7 @@ extension AppSession {
     // A mutation invalidates older reads even on the same connection.
     // Ready -> Saving -> confirmed local update, or retained draft + error.
     @discardableResult
-    package func save(_ artwork: Artwork) async -> Bool {
+    public func save(_ artwork: Artwork) async -> Bool {
         guard !mutations.contains(artwork.filename), previews.isEmpty else { return false }
         let generation = connectionID
         mutations.insert(artwork.filename)
@@ -234,7 +238,7 @@ extension AppSession {
         }
     }
 
-    package func upload(
+    public func upload(
         imageData: Data, filename: String, contentType: String = "image/jpeg"
     ) async throws -> Artwork {
         guard !mutations.contains(filename) else { throw ArtazzenAPI.APIError.requestFailed }
@@ -258,7 +262,7 @@ extension AppSession {
         return try await uploadedArtwork(filename: filename)
     }
 
-    package func uploadedArtwork(filename: String) async throws -> Artwork {
+    public func uploadedArtwork(filename: String) async throws -> Artwork {
         let generation = connectionID
         let api = try makeAPI()
         do {
@@ -279,7 +283,7 @@ extension AppSession {
         }
     }
 
-    package func regenerate(image: String, fields: [Artwork.AIField]) async -> Artwork? {
+    public func regenerate(image: String, fields: [Artwork.AIField]) async -> Artwork? {
         guard !previews.contains(image), !mutations.contains(image) else { return nil }
         let generation = connectionID
         previews.insert(image)
@@ -297,7 +301,7 @@ extension AppSession {
         }
     }
 
-    package func saveAIConfig() async {
+    public func saveAIConfig() async {
         guard hasLoadedConfig, !isSavingConfig else { return }
         let generation = connectionID
         let config = aiConfig

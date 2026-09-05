@@ -4,13 +4,13 @@ import Foundation
     import FoundationNetworking
 #endif
 
-package actor ArtazzenAPI {
-    package typealias Transport = @Sendable (URLRequest) async throws -> (Data, HTTPURLResponse)
+public actor ArtazzenAPI {
+    public typealias Transport = @Sendable (URLRequest) async throws -> (Data, HTTPURLResponse)
     private let transport: Transport
-    package let baseURL: URL
+    public let baseURL: URL
     private let credentials: (username: String, password: String)
 
-    package init(
+    public init(
         baseURL: URL, username: String, password: String,
         transport: @escaping Transport = { try await ArtazzenAPI.send($0) }
     ) {
@@ -100,7 +100,7 @@ package actor ArtazzenAPI {
         return (pending, gallery)
     }
 
-    package func saveMetadata(_ artwork: Artwork) async throws {
+    public func saveMetadata(_ artwork: Artwork) async throws {
         var components = URLComponents()
         components.queryItems = [
             URLQueryItem(name: "title", value: artwork.title),
@@ -144,7 +144,7 @@ package actor ArtazzenAPI {
         let errors: [[String: String]]
     }
 
-    package func regenerateFields(
+    public func regenerateFields(
         image: String, fields: [Artwork.AIField], force: Bool = true
     ) async throws -> Artwork? {
         let body = try JSONEncoder().encode(
@@ -163,7 +163,7 @@ package actor ArtazzenAPI {
             filename: updated.name, url: nil, sidecar: updated.metadata, relativeTo: baseURL)
     }
 
-    package func upload(
+    public func upload(
         imageData: Data, filename: String, contentType: String = "image/jpeg"
     ) async throws -> UploadResponse {
         let boundary = UUID().uuidString
@@ -197,32 +197,32 @@ package actor ArtazzenAPI {
         return result
     }
 
-    package func unapprove(_ name: String) async throws {
+    public func unapprove(_ name: String) async throws {
         _ = try await request("/admin/unapprove/\(name)", method: "POST")
     }
 
-    package func delete(_ name: String) async throws {
+    public func delete(_ name: String) async throws {
         _ = try await request("/admin/delete/\(name)", method: "POST")
     }
 
-    package func fetchCollections() async throws -> [CollectionSummary] {
+    public func fetchCollections() async throws -> [CollectionSummary] {
         struct Response: Codable { let collections: [CollectionSummary] }
         let data = try await request("/admin/api/collections")
         return try JSONDecoder().decode(Response.self, from: data).collections
     }
 
-    package func fetchConfig() async throws -> AIConfig {
+    public func fetchConfig() async throws -> AIConfig {
         let data = try await request("/admin/config")
         return try JSONDecoder().decode(AIConfigResponse.self, from: data).ai
     }
 
-    package func updateConfig(_ config: AIConfig) async throws {
+    public func updateConfig(_ config: AIConfig) async throws {
         struct Body: Codable { let ai: AIConfig }
         let body = try JSONEncoder().encode(Body(ai: config))
         _ = try await request("/admin/config", method: "POST", body: body)
     }
 
-    package struct UploadResponse: Decodable {
+    public struct UploadResponse: Decodable {
         struct Duplicate: Decodable { let name: String }
         let saved: [String]
         let skipped: [String]
@@ -230,16 +230,16 @@ package actor ArtazzenAPI {
         let pending: [PendingItem]
     }
 
-    package static func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+    public static func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         let (data, response) = try await URLSession.shared.data(
             for: request, delegate: NoRedirects())
         guard let http = response as? HTTPURLResponse else { throw APIError.requestFailed }
         return (data, http)
     }
 
-    package enum APIError: LocalizedError {
+    public enum APIError: LocalizedError {
         case requestFailed, generationFailed, uploadSkipped, metadataUnavailable
-        package var errorDescription: String? {
+        public var errorDescription: String? {
             switch self {
             case .requestFailed:
                 return "The server rejected the request. Check the connection and credentials."

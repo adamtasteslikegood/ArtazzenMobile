@@ -55,7 +55,7 @@ jobs:
       - name: Test package
         run: |
           xcodebuild -list
-          xcodebuild -scheme ArtazzenCore -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' -resultBundlePath TestResults test
+          xcodebuild -scheme ArtazzenMobile-Package -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' -resultBundlePath TestResults test
       - name: Upload test evidence
         if: always()
         uses: actions/upload-artifact@v7

@@ -1,39 +1,39 @@
 import Foundation
 
-package struct Artwork: Codable, Identifiable, Hashable {
-    package var id: String { filename }
-    package let filename: String
-    package var title: String {
+public struct Artwork: Codable, Identifiable, Hashable {
+    public var id: String { filename }
+    public let filename: String
+    public var title: String {
         didSet { if title != oldValue { aiFields.removeAll { $0 == .title } } }
     }
-    package var description: String {
+    public var description: String {
         didSet { if description != oldValue { aiFields.removeAll { $0 == .description } } }
     }
-    package var caption: String {
+    public var caption: String {
         didSet { if caption != oldValue { aiFields.removeAll { $0 == .caption } } }
     }
-    package var tags: [String] {
+    public var tags: [String] {
         didSet { if tags != oldValue { aiFields.removeAll { $0 == .tags } } }
     }
-    package var artist: String
-    package var copyright: String
-    package var collection: String
-    package var status: ArtworkStatus
-    package var aiGenerated: Bool
-    package var aiFields: [AIField]
-    package let detectedAt: Double
+    public var artist: String
+    public var copyright: String
+    public var collection: String
+    public var status: ArtworkStatus
+    public var aiGenerated: Bool
+    public var aiFields: [AIField]
+    public let detectedAt: Double
 
-    package enum ArtworkStatus: String, Codable, CaseIterable {
+    public enum ArtworkStatus: String, Codable, CaseIterable {
         case pending, approved, hidden
     }
 
-    package enum AIField: String, Codable, CaseIterable {
+    public enum AIField: String, Codable, CaseIterable {
         case title, caption, description, tags
     }
 
-    package var url: String?
+    public var url: String?
 
-    package enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case filename, name, title, description, caption, tags
         case artist, copyright, collection, status, url
         case aiGenerated = "ai_generated"
@@ -41,7 +41,7 @@ package struct Artwork: Codable, Identifiable, Hashable {
         case detectedAt = "detected_at"
     }
 
-    package init(
+    public init(
         filename: String,
         title: String = "",
         description: String = "",
@@ -71,7 +71,7 @@ package struct Artwork: Codable, Identifiable, Hashable {
         self.url = url
     }
 
-    package init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let filenameKey = try container.decodeIfPresent(String.self, forKey: .filename)
         let nameKey = try container.decodeIfPresent(String.self, forKey: .name)
@@ -98,7 +98,7 @@ package struct Artwork: Codable, Identifiable, Hashable {
         url = try container.decodeIfPresent(String.self, forKey: .url)
     }
 
-    package func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(filename, forKey: .filename)
         try container.encode(title, forKey: .title)
@@ -115,14 +115,14 @@ package struct Artwork: Codable, Identifiable, Hashable {
         try container.encodeIfPresent(url, forKey: .url)
     }
 
-    package var imageURL: URL? {
+    public var imageURL: URL? {
         if let url, !url.isEmpty {
             return URL(string: url)
         }
         return nil
     }
 
-    package func imageURL(relativeTo base: URL) -> URL? {
+    public func imageURL(relativeTo base: URL) -> URL? {
         if let url, !url.isEmpty {
             if let absolute = URL(string: url), absolute.scheme != nil {
                 return absolute
@@ -132,13 +132,13 @@ package struct Artwork: Codable, Identifiable, Hashable {
         return base.appendingPathComponent("static/images/\(filename)")
     }
 
-    package func resolved(relativeTo base: URL) -> Artwork {
+    public func resolved(relativeTo base: URL) -> Artwork {
         var copy = self
         copy.url = imageURL(relativeTo: base)?.absoluteString
         return copy
     }
 
-    package static func fromSidecar(
+    public static func fromSidecar(
         filename: String,
         url: String?,
         sidecar: SidecarPayload?,
@@ -162,11 +162,11 @@ package struct Artwork: Codable, Identifiable, Hashable {
         ).resolved(relativeTo: base)
     }
 
-    package func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(filename)
     }
 
-    package func fieldValue(_ field: AIField) -> [String] {
+    public func fieldValue(_ field: AIField) -> [String] {
         switch field {
         case .title: return [title]
         case .description: return [description]
@@ -175,7 +175,7 @@ package struct Artwork: Codable, Identifiable, Hashable {
         }
     }
 
-    package mutating func applyPreview(_ preview: Artwork, field: AIField) {
+    public mutating func applyPreview(_ preview: Artwork, field: AIField) {
         guard filename == preview.filename else { return }
         switch field {
         case .title: title = preview.title
@@ -187,35 +187,35 @@ package struct Artwork: Codable, Identifiable, Hashable {
         aiGenerated = true
     }
 
-    package static func == (lhs: Artwork, rhs: Artwork) -> Bool {
+    public static func == (lhs: Artwork, rhs: Artwork) -> Bool {
         lhs.filename == rhs.filename
     }
 }
 
 /// Backend image sidecar fields (see ArtazzenDotCom `ImageSidecar.schema.json`).
-package struct SidecarPayload: Decodable, Equatable {
-    package var title: String = ""
-    package var description: String = ""
-    package var caption: String = ""
-    package var tags: [String] = []
-    package var artist: String = ""
-    package var copyright: String = ""
-    package var collection: String = ""
-    package var status: Artwork.ArtworkStatus = .pending
-    package var aiGenerated: Bool = false
-    package var aiFields: [Artwork.AIField] = []
-    package var detectedAt: Double = 0
+public struct SidecarPayload: Decodable, Equatable {
+    public var title: String = ""
+    public var description: String = ""
+    public var caption: String = ""
+    public var tags: [String] = []
+    public var artist: String = ""
+    public var copyright: String = ""
+    public var collection: String = ""
+    public var status: Artwork.ArtworkStatus = .pending
+    public var aiGenerated: Bool = false
+    public var aiFields: [Artwork.AIField] = []
+    public var detectedAt: Double = 0
 
-    package enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case title, description, caption, tags, artist, copyright, collection, status
         case aiGenerated = "ai_generated"
         case aiFields = "ai_fields"
         case detectedAt = "detected_at"
     }
 
-    package init() {}
+    public init() {}
 
-    package init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
         description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
@@ -234,12 +234,12 @@ package struct SidecarPayload: Decodable, Equatable {
     }
 }
 
-package struct CollectionSummary: Codable, Identifiable, Hashable {
-    package let id: String
-    package var title: String?
-    package var count: Int?
+public struct CollectionSummary: Codable, Identifiable, Hashable {
+    public let id: String
+    public var title: String?
+    public var count: Int?
 
-    package var displayName: String {
+    public var displayName: String {
         if let title, !title.isEmpty { return title }
         return id
     }

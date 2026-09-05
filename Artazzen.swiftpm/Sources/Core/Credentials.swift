@@ -4,12 +4,12 @@ import Foundation
     import Security
 #endif
 
-package struct Connection: Equatable, Sendable {
-    package let baseURL: URL
-    package let username: String
-    package let password: String
+public struct Connection: Equatable, Sendable {
+    public let baseURL: URL
+    public let username: String
+    public let password: String
 
-    package init(server: String, username: String, password: String) throws {
+    public init(server: String, username: String, password: String) throws {
         guard
             var parts = URLComponents(
                 string: server.trimmingCharacters(in: .whitespacesAndNewlines)),
@@ -29,17 +29,17 @@ package struct Connection: Equatable, Sendable {
         self.password = password
     }
 
-    package var credentialKey: String { baseURL.absoluteString + "|" + username }
+    public var credentialKey: String { baseURL.absoluteString + "|" + username }
 }
 
-package protocol CredentialStore {
+public protocol CredentialStore {
     func read(key: String) throws -> String?
     func write(_ password: String, key: String) throws
 }
 
-package enum CredentialError: LocalizedError {
+public enum CredentialError: LocalizedError {
     case invalidConnection, storageFailed
-    package var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .invalidConnection:
             return "Enter a valid HTTPS Server URL, admin username, and password in Settings."
@@ -49,8 +49,8 @@ package enum CredentialError: LocalizedError {
     }
 }
 
-package struct KeychainCredentialStore: CredentialStore {
-    package init() {}
+public struct KeychainCredentialStore: CredentialStore {
+    public init() {}
     #if canImport(Security)
         private func query(_ key: String) -> [String: Any] {
             [
@@ -60,7 +60,7 @@ package struct KeychainCredentialStore: CredentialStore {
             ]
         }
 
-        package func read(key: String) throws -> String? {
+        public func read(key: String) throws -> String? {
             var attributes = query(key)
             attributes[kSecReturnData as String] = true
             attributes[kSecMatchLimit as String] = kSecMatchLimitOne
@@ -73,7 +73,7 @@ package struct KeychainCredentialStore: CredentialStore {
             return password
         }
 
-        package func write(_ password: String, key: String) throws {
+        public func write(_ password: String, key: String) throws {
             let attributes = query(key)
             let values: [String: Any] = [kSecValueData as String: Data(password.utf8)]
             let status = SecItemUpdate(attributes as CFDictionary, values as CFDictionary)
@@ -86,8 +86,8 @@ package struct KeychainCredentialStore: CredentialStore {
             }
         }
     #else
-        package func read(key: String) throws -> String? { throw CredentialError.storageFailed }
-        package func write(_ password: String, key: String) throws {
+        public func read(key: String) throws -> String? { throw CredentialError.storageFailed }
+        public func write(_ password: String, key: String) throws {
             throw CredentialError.storageFailed
         }
     #endif
