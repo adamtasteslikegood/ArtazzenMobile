@@ -95,4 +95,82 @@ final class ArtworkTests: XCTestCase {
             "https://cdn.example.com/test.jpg"
         )
     }
+
+    func testDecodeAcceptsBackendNameKey() throws {
+        let json = """
+            {
+                "name": "from-api.jpg",
+                "title": "Named",
+                "url": "/images/from-api.jpg",
+                "status": "approved",
+                "ai_generated": false,
+                "detected_at": 1
+            }
+            """.data(using: .utf8)!
+        let artwork = try JSONDecoder().decode(Artwork.self, from: json)
+        XCTAssertEqual(artwork.filename, "from-api.jpg")
+        let resolved = artwork.imageURL(relativeTo: URL(string: "https://artazzen.com/")!)
+        XCTAssertEqual(resolved?.absoluteString, "https://artazzen.com/images/from-api.jpg")
+    }
+
+    func testPendingAndGalleryPayloadMapping() async throws {
+        let json = """
+            {
+              "pending": [
+                {
+                  "name": "new.jpg",
+                  "url": "/images/new.jpg",
+                  "metadata": {
+                    "title": "Fresh",
+                    "status": "pending",
+                    "ai_generated": true,
+                    "ai_fields": ["title"],
+                    "detected_at": 9
+                  }
+                }
+              ],
+              "gallery": [
+                {
+                  "name": "live.jpg",
+                  "url": "/images/live.jpg",
+                  "title": "Live",
+                  "status": "approved",
+                  "collection": "botanical",
+                  "ai_generated": false,
+                  "detected_at": 8
+                }
+              ]
+            }
+            """.data(using: .utf8)!
+        let decoded = try JSONDecoder().decode(ArtazzenAPI.PendingResponse.self, from: json)
+        XCTAssertEqual(decoded.pending.first?.name, "new.jpg")
+        XCTAssertEqual(decoded.pending.first?.metadata?.title, "Fresh")
+        XCTAssertEqual(decoded.gallery.first?.name, "live.jpg")
+        XCTAssertEqual(decoded.gallery.first?.sidecar.title, "Live")
+        XCTAssertEqual(decoded.gallery.first?.sidecar.status, .approved)
+
+        let api = ArtazzenAPI(
+            baseURL: URL(string: "https://artazzen.com/")!,
+            username: "admin",
+            password: "x"
+        )
+        let mapped = await api.artworks(from: decoded)
+        XCTAssertEqual(mapped.pending.first?.filename, "new.jpg")
+        XCTAssertEqual(mapped.pending.first?.title, "Fresh")
+        XCTAssertEqual(
+            mapped.gallery.first?.url,
+            "https://artazzen.com/images/live.jpg"
+        )
+    }
+
+    func testCollectionsRegistryDecode() throws {
+        let json = """
+            {"collections":[{"id":"botanical","title":"Botanical","count":4}]}
+            """.data(using: .utf8)!
+        struct Response: Codable { let collections: [CollectionSummary] }
+        let decoded = try JSONDecoder().decode(Response.self, from: json)
+        XCTAssertEqual(decoded.collections.first?.id, "botanical")
+        XCTAssertEqual(decoded.collections.first?.displayName, "Botanical")
+        XCTAssertEqual(decoded.collections.first?.count, 4)
+    }
 }

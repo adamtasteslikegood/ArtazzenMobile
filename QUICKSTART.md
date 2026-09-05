@@ -19,7 +19,22 @@ brew install swiftlint swift-format
 open Package.swift
 ```
 
-Select the `ArtazzenMobile` scheme and an iOS 17+ Simulator in Xcode, then run the app. Configure any backend credentials through the app's settings; never commit credentials.
+Select the `ArtazzenMobile` scheme and an iOS 17+ Simulator in Xcode, then run the app. In Settings, set the server to `https://artazzen.com` plus your admin username/password (HTTP Basic). Never commit credentials.
+
+## iPad Swift Playgrounds
+
+`Artazzen.swiftpm` is an App Playground you can AirDrop or copy into Files, then open in Swift Playgrounds.
+
+1. On a Mac, zip the `Artazzen.swiftpm` folder (or copy the whole repo).
+2. AirDrop / iCloud Drive it onto the iPad.
+3. Open it in Swift Playgrounds and tap Run.
+4. Settings → Artazzen Server → URL `https://artazzen.com`, admin username and password → Connect and Load.
+
+After changing `Sources/`, refresh the playground copy:
+
+```sh
+./scripts/export-playground.sh
+```
 
 ## Verify a change
 
