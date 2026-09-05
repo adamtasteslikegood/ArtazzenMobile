@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import ArtazzenMobile
+@testable import ArtazzenCore
 
 final class ArtworkTests: XCTestCase {
     let sampleJSON = """

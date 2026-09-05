@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct SwipeDeckView: View {
     @Environment(AppSession.self) private var session
     @State private var offset: CGSize = .zero
@@ -26,7 +28,7 @@ struct SwipeDeckView: View {
                     )
                 } else {
                     ForEach(
-                        Array(pending.enumerated().reversed()),
+                        Array(pending.prefix(3).enumerated().reversed()),
                         id: \.element.id
                     ) { index, artwork in
                         let isTop = (index == 0)
@@ -49,49 +51,55 @@ struct SwipeDeckView: View {
                                         }
                                     }
                             )
-                            .allowsHitTesting(isTop)
+                            .allowsHitTesting(isTop && session.mutations.isEmpty)
                             .animation(.spring(), value: offset)
                     }
 
                     VStack {
                         Spacer()
+                        if !session.mutations.isEmpty {
+                            ProgressView("Approving...")
+                        }
                         HStack(spacing: 48) {
-                            Button { hide() } label: {
+                            Button {
+                                hide()
+                            } label: {
                                 Image(systemName: "xmark.circle.fill")
                                     .font(.system(size: 44))
                                     .foregroundStyle(Color.azOrange)
                             }
-                            Button { approve() } label: {
+                            Button {
+                                approve()
+                            } label: {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.system(size: 44))
                                     .foregroundStyle(Color.azTeal)
                             }
                         }
                         .padding(.bottom, 32)
+                        .disabled(!session.mutations.isEmpty)
                     }
                 }
             }
             .navigationTitle("Review")
+            .safeAreaInset(edge: .top) { SessionNotice() }
         }
     }
 
     private func approve() {
-        guard let artwork = pending.first else { return }
-        withAnimation(.easeOut(duration: 0.3)) {
-            offset = CGSize(width: 500, height: 0)
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            Task { await session.approve(artwork) }
-            offset = .zero
-        }
+        guard let artwork = pending.first, session.mutations.isEmpty else { return }
+        withAnimation(.spring()) { offset = .zero }
+        Task { await session.approve(artwork) }
     }
 
     private func hide() {
-        guard let artwork = pending.first else { return }
+        guard let artwork = pending.first, session.mutations.isEmpty else { return }
+        let generation = session.connectionID
         withAnimation(.easeOut(duration: 0.3)) {
             offset = CGSize(width: -500, height: 0)
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            guard generation == session.connectionID else { return }
             session.hide(artwork)
             offset = .zero
         }

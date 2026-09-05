@@ -30,9 +30,12 @@ let package = Package(
         )
     ],
     targets: [
+        .target(name: "ArtazzenCore", path: "Sources/Core"),
         .executableTarget(
             name: "AppModule",
-            path: "Sources"
+            dependencies: ["ArtazzenCore"],
+            path: "Sources",
+            exclude: ["Core"]
         )
     ]
 )

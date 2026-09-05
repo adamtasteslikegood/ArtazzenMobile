@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct MetadataEditor: View {
     @Environment(AppSession.self) private var session
     @State var artwork: Artwork
@@ -59,6 +61,14 @@ struct MetadataEditor: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(Color.azTeal)
+                .disabled(
+                    !session.hasCredentials || !session.previews.isEmpty
+                        || session.mutations.contains(artwork.filename))
+                if let error = session.lastError {
+                    Text(error).foregroundStyle(.red)
+                } else if let message = session.lastMessage {
+                    Text(message).foregroundStyle(.secondary)
+                }
             }
         }
         .font(.azBody)

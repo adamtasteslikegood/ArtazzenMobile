@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct ReviewCard: View {
     let artwork: Artwork
 

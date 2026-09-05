@@ -1,6 +1,8 @@
+import ArtazzenCore
 import SwiftUI
 
 @main
+@MainActor
 struct ArtazzenMobileApp: App {
     @State private var session = AppSession()
     @AppStorage(SettingsStorage.darkMode) private var darkMode = false

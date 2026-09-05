@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct SettingsView: View {
     @Environment(AppSession.self) private var session
     @AppStorage(SettingsStorage.darkMode) private var darkMode = false
@@ -17,13 +19,15 @@ struct SettingsView: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
+                        .onChange(of: session.serverURLString) { _, _ in session.loadDraftPassword()
+                        }
                     TextField("Admin username", text: $session.username)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
+                        .onChange(of: session.username) { _, _ in session.loadDraftPassword() }
                     SecureField("Admin password", text: $session.password)
                     Button("Connect and Load") {
-                        session.persistConnection()
-                        Task { await session.refresh() }
+                        Task { await session.connect() }
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(Color.azTeal)
@@ -62,10 +66,23 @@ struct SettingsView: View {
                         step: 50
                     )
                 }
+                .disabled(!session.hasLoadedConfig || session.isSavingConfig)
+
+                if let error = session.configError {
+                    Section {
+                        Text(error).foregroundStyle(.orange)
+                        Button("Retry AI Settings") { Task { await session.retryConfig() } }
+                    }
+                }
+                if let error = session.collectionsError {
+                    Section {
+                        Text(error).foregroundStyle(.orange)
+                        Button("Retry Collections") { Task { await session.retryCollections() } }
+                    }
+                }
 
                 Section {
                     Button("Save Settings") {
-                        session.persistConnection()
                         Task { await session.saveAIConfig() }
                     }
                     .buttonStyle(.borderedProminent)
@@ -80,9 +97,11 @@ struct SettingsView: View {
                         )
                     }
                 }
+                .disabled(!session.hasLoadedConfig || session.isSavingConfig)
 
                 Section("About") {
-                    LabeledContent("Server", value: session.serverURLString)
+                    LabeledContent(
+                        "Connected Server", value: session.activeServer ?? "Not connected")
                     LabeledContent("Version", value: "1.0.0")
                     Text(
                         "Admin JSON: GET /admin/api/new-files. Docs: artazzen.com/docs"

@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct QueueCard: View {
     let artwork: Artwork
 

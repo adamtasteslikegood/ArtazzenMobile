@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct QueueView: View {
     @Environment(AppSession.self) private var session
     @State private var searchText = ""
@@ -50,6 +52,7 @@ struct QueueView: View {
                 }
             }
             .navigationTitle("Queue")
+            .safeAreaInset(edge: .top) { SessionNotice() }
             .searchable(text: $searchText, prompt: "Search artwork")
             .refreshable { await session.refresh() }
             .toolbar {

@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct ArtworkCard: View {
     let artwork: Artwork
     var showStatus = false

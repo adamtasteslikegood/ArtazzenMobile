@@ -1,3 +1,4 @@
+import ArtazzenCore
 import SwiftUI
 
 enum GalleryGrid {

@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct ArtworkDetailView: View {
     let artwork: Artwork
 
@@ -63,6 +65,7 @@ struct ArtworkDetailView: View {
     }
 }
 
+@MainActor
 private struct MetadataRow: View {
     let label: String
     let value: String

@@ -1,6 +1,9 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct MainTabView: View {
+    @Environment(AppSession.self) private var session
     @State private var selectedTab = 0
 
     var body: some View {
@@ -36,5 +39,6 @@ struct MainTabView: View {
                 .tag(4)
         }
         .tint(Color.azTeal)
+        .id(session.connectionID)
     }
 }

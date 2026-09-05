@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct AIFieldRow<Content: View>: View {
     let label: String
     let field: Artwork.AIField
@@ -31,12 +33,17 @@ struct AIFieldRow<Content: View>: View {
                 }
                 Button {
                     isRegenerating = true
+                    let original = artwork.fieldValue(field)
+                    let generation = session.connectionID
                     Task {
                         if let updated = await session.regenerate(
                             image: artwork.filename,
                             fields: [field]
                         ) {
-                            artwork = updated
+                            let unchanged = artwork.fieldValue(field) == original
+                            if generation == session.connectionID && unchanged {
+                                artwork.applyPreview(updated, field: field)
+                            }
                         }
                         isRegenerating = false
                     }
@@ -51,8 +58,12 @@ struct AIFieldRow<Content: View>: View {
                 }
                 .buttonStyle(.borderless)
                 .tint(Color.azViolet)
+                .disabled(
+                    session.previews.contains(artwork.filename)
+                        || session.mutations.contains(artwork.filename))
             }
             content()
+                .disabled(isRegenerating)
         }
     }
 }

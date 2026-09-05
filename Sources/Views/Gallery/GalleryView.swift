@@ -1,5 +1,7 @@
+import ArtazzenCore
 import SwiftUI
 
+@MainActor
 struct GalleryView: View {
     @Environment(AppSession.self) private var session
     @State private var searchText = ""
@@ -45,6 +47,7 @@ struct GalleryView: View {
                 }
             }
             .navigationTitle("Gallery")
+            .safeAreaInset(edge: .top) { SessionNotice() }
             .searchable(text: $searchText, prompt: "Search artwork")
             .refreshable { await session.refresh() }
             .toolbar {
