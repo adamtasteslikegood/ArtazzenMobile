@@ -3,6 +3,8 @@ import PackageDescription
 
 let package = Package(
     name: "ArtazzenMobile",
+    // macOS 14 is the Observation minimum for ArtazzenCore, not macOS app support.
+    // Build the iOS-only executable with xcodebuild and an explicit iOS destination.
     platforms: [.iOS(.v17), .macOS(.v14)],
     products: [
         .library(name: "ArtazzenCore", targets: ["ArtazzenCore"]),

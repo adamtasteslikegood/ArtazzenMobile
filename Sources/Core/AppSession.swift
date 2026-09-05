@@ -132,7 +132,7 @@ public final class AppSession {
     }
 
     public func refresh() async {
-        guard mutations.isEmpty else { return }
+        guard hasCredentials, mutations.isEmpty else { return }
         let generation = connectionID
         let request = UUID()
         let startingRevision = revision

@@ -22,6 +22,7 @@ final class CredentialTests: XCTestCase {
         for server in [
             "relative", "file:///tmp/a", "http://example.com", "https://u:p@example.com",
             "https://example.com?q=x", "https://example.com/#x",
+            "https://example.com/admin", "https://example.com/admin/",
         ] {
             XCTAssertThrowsError(
                 try Connection(server: server, username: "admin", password: "secret"))

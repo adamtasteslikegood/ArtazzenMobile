@@ -15,6 +15,7 @@ public struct Connection: Equatable, Sendable {
                 string: server.trimmingCharacters(in: .whitespacesAndNewlines)),
             let host = parts.host, !host.isEmpty,
             parts.user == nil, parts.password == nil, parts.query == nil, parts.fragment == nil,
+            parts.path.isEmpty || parts.path == "/",
             parts.scheme == "https"
                 || (parts.scheme == "http" && ["localhost", "127.0.0.1", "::1"].contains(host)),
             !username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
@@ -42,7 +43,8 @@ public enum CredentialError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .invalidConnection:
-            return "Enter a valid HTTPS Server URL, admin username, and password in Settings."
+            return
+                "Enter an HTTPS Server URL without a path, admin username, and password in Settings."
         case .storageFailed:
             return "Could not access Keychain. Unlock the device and try again."
         }

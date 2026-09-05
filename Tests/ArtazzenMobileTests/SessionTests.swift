@@ -24,6 +24,20 @@ final class SessionTests: XCTestCase {
     }
 
     @MainActor
+    func testFirstLaunchRefreshKeepsConnectEmptyState() async {
+        let server = TestServer()
+        let session = session(server)
+        await session.refresh()
+        XCTAssertFalse(session.hasCredentials)
+        XCTAssertFalse(session.isLoading)
+        XCTAssertNil(session.lastError)
+        XCTAssertNil(session.collectionsError)
+        XCTAssertNil(session.configError)
+        let requests = await server.recorded()
+        XCTAssertTrue(requests.isEmpty)
+    }
+
+    @MainActor
     func testApprovalWaitsAndRejectsDuplicateUntilConfirmed() async throws {
         let server = TestServer()
         let session = session(server)
