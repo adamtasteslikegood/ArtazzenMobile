@@ -15,7 +15,7 @@ enum GalleryGrid {
                             .padding(6)
                     }
 
-                Text(artwork.title.isEmpty ? artwork.filename : artwork.title)
+                Text(artwork.displayTitle)
                     .font(.azBody)
                     .fontWeight(.semibold)
                     .lineLimit(1)

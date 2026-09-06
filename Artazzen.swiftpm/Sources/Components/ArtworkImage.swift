@@ -42,7 +42,7 @@ struct ArtworkImage: View {
             }
             .clipped()
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(artwork.title.isEmpty ? artwork.filename : artwork.title)
+            .accessibilityLabel(artwork.displayTitle)
             .accessibilityValue(failure ?? (image == nil ? "Loading image" : "Artwork image"))
             .accessibilityAction(named: "Retry image") { retry += 1 }
             .contextMenu { Button("Retry Image", systemImage: "arrow.clockwise") { retry += 1 } }

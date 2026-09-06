@@ -37,6 +37,16 @@ final class ArtworkTests: XCTestCase {
         XCTAssertNil(artwork.imageURL)
     }
 
+    func testDisplayTitleFallsBackWithoutChangingMetadata() {
+        var artwork = Artwork(filename: "untitled.jpg")
+        XCTAssertEqual(artwork.displayTitle, "untitled.jpg")
+        artwork.title = " \n "
+        XCTAssertEqual(artwork.displayTitle, "untitled.jpg")
+        XCTAssertEqual(artwork.title, " \n ")
+        artwork.title = "Botanical Study"
+        XCTAssertEqual(artwork.displayTitle, "Botanical Study")
+    }
+
     func testEncode() throws {
         let artwork = try JSONDecoder().decode(Artwork.self, from: sampleJSON)
         let encoded = try JSONEncoder().encode(artwork)

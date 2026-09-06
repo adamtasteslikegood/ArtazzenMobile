@@ -18,7 +18,7 @@ struct ArtworkCard: View {
                     }
                 }
 
-            Text(artwork.title)
+            Text(artwork.displayTitle)
                 .font(.azBody)
                 .fontWeight(.semibold)
                 .lineLimit(1)

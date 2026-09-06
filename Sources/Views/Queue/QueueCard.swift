@@ -14,7 +14,7 @@ struct QueueCard: View {
             .clipShape(RoundedRectangle(cornerRadius: 4))
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(artwork.title)
+                Text(artwork.displayTitle)
                     .font(.azBody)
                     .lineLimit(1)
                 Text(artwork.filename)

@@ -13,7 +13,7 @@ struct ArtworkDetailView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
 
                 VStack(alignment: .leading, spacing: 16) {
-                    Text(artwork.title)
+                    Text(artwork.displayTitle)
                         .font(.azDisplay)
 
                     if !artwork.caption.isEmpty {
@@ -61,7 +61,7 @@ struct ArtworkDetailView: View {
             .frame(maxWidth: .infinity)
             .padding()
         }
-        .navigationTitle(artwork.title)
+        .navigationTitle(artwork.displayTitle)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

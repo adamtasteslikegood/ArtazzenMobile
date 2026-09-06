@@ -12,7 +12,7 @@ struct ReviewCard: View {
                 .aspectRatio(4 / 5, contentMode: .fit)
 
             VStack(alignment: .leading, spacing: 8) {
-                Text(artwork.title)
+                Text(artwork.displayTitle)
                     .font(.azDisplay)
                     .lineLimit(2)
 
