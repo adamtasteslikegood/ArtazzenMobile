@@ -46,6 +46,9 @@ struct SettingsView: View {
                     Toggle("Enable AI Generation", isOn: $session.aiConfig.enabled)
 
                     Picker("Model", selection: $session.aiConfig.model) {
+                        if !["gpt-4o-mini", "gpt-5-mini"].contains(session.aiConfig.model) {
+                            Text(session.aiConfig.model + " (server)").tag(session.aiConfig.model)
+                        }
                         Text("gpt-4o-mini").tag("gpt-4o-mini")
                         Text("gpt-5-mini").tag("gpt-5-mini")
                     }

@@ -13,6 +13,7 @@ Swift 5.9, SwiftUI-only (UIKit appears only for `PhotosPicker`/`UIImage` in Capt
 - `Sources/Core/` — `Artwork`, `AIConfig`, `AppSession`, and `Credentials`; palette/fonts remain in `Sources/Models/DesignTokens.swift`.
 - `Sources/Core/ArtazzenAPI.swift` — `actor ArtazzenAPI` with Basic auth and one method per backend endpoint.
 - `Sources/Views/` — one `NavigationStack` per tab; Gallery and Queue push `ArtworkDetailView` via `navigationDestination(for: Artwork.self)` + `NavigationLink(value:)`.
+- `Sources/Core/ArtworkImageLoader.swift` — public image downloads, HTTP errors, ImageIO thumbnails, and bounded decoded-image cache. `ArtworkImage` is the shared loading/error/retry view.
 - `Sources/Components/` — `TagPill`, `StatusBadge`, `AIFieldEditor` (`AIFieldRow`), and `ArtworkCard` (currently unused).
 - `Tests/ArtazzenMobileTests/ArtworkTests.swift` — decode/encode, relative image URLs, pending/gallery mapping, collections registry.
 
@@ -20,7 +21,7 @@ Swift 5.9, SwiftUI-only (UIKit appears only for `PhotosPicker`/`UIImage` in Capt
 
 ## Design system
 
-`Sources/Models/DesignTokens.swift` defines the palette (`azCarbon`, `azParchment`, `azTeal`, `azOrange`, `azViolet`) and three custom fonts (ClashGrotesk-Bold, InstrumentSans-Regular, JetBrainsMono-Regular). The font files are not bundled in this package, so `Font.custom` silently falls back to the system font. There is no design doc in this repo; the original design handoff and the backend contract live in the `ArtazzenDotCom` repository.
+`Sources/Models/DesignTokens.swift` defines the palette (`azCarbon`, `azParchment`, `azTeal`, `azOrange`, `azViolet`) and three custom fonts (ClashGrotesk-Bold, InstrumentSans-Regular, JetBrainsMono-Regular). The font files are not bundled in this package, so `Font.custom` silently falls back to the system font. `docs/ios-visual-qa.md` maps the design references and device workflow; the original design handoff and backend contract live in `ArtazzenDotCom`. The specific interactive iOS HTML mockup has not been located.
 
 ## API contract notes
 
