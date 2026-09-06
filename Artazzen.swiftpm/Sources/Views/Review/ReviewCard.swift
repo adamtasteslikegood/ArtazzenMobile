@@ -3,19 +3,16 @@ import SwiftUI
 
 @MainActor
 struct ReviewCard: View {
+    @Environment(\.colorScheme) private var colorScheme
     let artwork: Artwork
 
     var body: some View {
         VStack(spacing: 0) {
-            AsyncImage(url: artwork.imageURL) { image in
-                image.resizable().scaledToFit()
-            } placeholder: {
-                Rectangle().fill(Color.azCarbon.opacity(0.1))
-                    .aspectRatio(4 / 5, contentMode: .fit)
-            }
+            ArtworkImage(artwork: artwork)
+                .aspectRatio(4 / 5, contentMode: .fit)
 
             VStack(alignment: .leading, spacing: 8) {
-                Text(artwork.title)
+                Text(artwork.displayTitle)
                     .font(.azDisplay)
                     .lineLimit(2)
 
@@ -26,9 +23,11 @@ struct ReviewCard: View {
                 }
 
                 if !artwork.tags.isEmpty {
-                    HStack(spacing: 6) {
-                        ForEach(artwork.tags.prefix(5), id: \.self) { tag in
-                            TagPill(text: tag)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 6) {
+                            ForEach(artwork.tags.prefix(5), id: \.self) { tag in
+                                TagPill(text: tag)
+                            }
                         }
                     }
                 }
@@ -36,9 +35,9 @@ struct ReviewCard: View {
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(Color.azParchment)
+        .background(colorScheme == .dark ? Color.azCarbon : Color.azParchment)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .shadow(radius: 8, x: 0, y: 4)
-        .padding(.horizontal, 20)
+
     }
 }

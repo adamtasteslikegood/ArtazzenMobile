@@ -8,16 +8,12 @@ struct ArtworkDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                AsyncImage(url: artwork.imageURL) { image in
-                    image.resizable().scaledToFit()
-                } placeholder: {
-                    Rectangle().fill(Color.azCarbon.opacity(0.1))
-                        .aspectRatio(4 / 5, contentMode: .fit)
-                }
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                ArtworkImage(artwork: artwork, maxPixelSize: 2048)
+                    .aspectRatio(4 / 5, contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
 
                 VStack(alignment: .leading, spacing: 16) {
-                    Text(artwork.title)
+                    Text(artwork.displayTitle)
                         .font(.azDisplay)
 
                     if !artwork.caption.isEmpty {
@@ -41,9 +37,11 @@ struct ArtworkDetailView: View {
                             Text("Tags")
                                 .font(.azMono)
                                 .foregroundStyle(.secondary)
-                            HStack(spacing: 6) {
-                                ForEach(artwork.tags, id: \.self) { tag in
-                                    TagPill(text: tag)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 6) {
+                                    ForEach(artwork.tags, id: \.self) { tag in
+                                        TagPill(text: tag)
+                                    }
                                 }
                             }
                         }
@@ -59,8 +57,11 @@ struct ArtworkDetailView: View {
                 }
                 .padding(.horizontal)
             }
+            .frame(maxWidth: 960)
+            .frame(maxWidth: .infinity)
+            .padding()
         }
-        .navigationTitle(artwork.title)
+        .navigationTitle(artwork.displayTitle)
         .navigationBarTitleDisplayMode(.inline)
     }
 }

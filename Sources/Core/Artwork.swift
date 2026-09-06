@@ -3,6 +3,9 @@ import Foundation
 public struct Artwork: Codable, Identifiable, Hashable {
     public var id: String { filename }
     public let filename: String
+    public var displayTitle: String {
+        title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? filename : title
+    }
     public var title: String {
         didSet { if title != oldValue { aiFields.removeAll { $0 == .title } } }
     }

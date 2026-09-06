@@ -8,21 +8,17 @@ struct ArtworkCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            AsyncImage(url: artwork.imageURL) { image in
-                image.resizable().scaledToFill()
-            } placeholder: {
-                Rectangle().fill(Color.azCarbon.opacity(0.1))
-            }
-            .frame(height: 200)
-            .clipShape(RoundedRectangle(cornerRadius: 4))
-            .overlay(alignment: .topTrailing) {
-                if showStatus {
-                    StatusBadge(status: artwork.status)
-                        .padding(6)
+            ArtworkImage(artwork: artwork, contentMode: .fill, maxPixelSize: 640)
+                .frame(height: 200)
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+                .overlay(alignment: .topTrailing) {
+                    if showStatus {
+                        StatusBadge(status: artwork.status)
+                            .padding(6)
+                    }
                 }
-            }
 
-            Text(artwork.title)
+            Text(artwork.displayTitle)
                 .font(.azBody)
                 .fontWeight(.semibold)
                 .lineLimit(1)

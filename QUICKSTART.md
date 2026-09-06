@@ -42,6 +42,9 @@ CI checks source synchronization, runs core XCTest on an iOS Simulator, builds t
 
 Prototype acceptance on iPad: connect and reload the deck; relaunch and confirm credentials persist; approve one test artwork; choose a photo and tap Upload; preview a metadata field without losing other edits; Save & Approve. Verify a failed upload/approval remains retryable. Connection edits apply only through Connect and Load. Hide is local to the current session; it is not a backend operation. The picker preserves supported image formats and converts unsupported formats such as HEIC to JPEG.
 
+For artwork loading diagnostics, design references, and the device feedback loop, see
+[visual QA](docs/ios-visual-qa.md).
+
 ## Verify a change
 
 ```sh
