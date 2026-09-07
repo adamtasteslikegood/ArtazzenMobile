@@ -1,0 +1,36 @@
+{
+  "entries": {
+    ".github/dependabot.yml": {
+      "description": {
+        "classes": [],
+        "extraction_quality": "raw_source",
+        "file_path": ".github/dependabot.yml",
+        "functions": [],
+        "language": "YAML",
+        "overview": {
+          "key_responsibilities": [
+            "Configure Dependabot to check for updates to GitHub Actions workflows (package-ecosystem: github-actions).",
+            "Specify the repository scope for update checks (directory: /).",
+            "Schedule update checks to run on a weekly interval.",
+            "Limit the number of open Dependabot pull requests to a maximum of 10."
+          ],
+          "notable_patterns": [
+            "Dependabot configuration versioned as v2",
+            "Targets the github-actions package ecosystem",
+            "Uses a scheduled (weekly) update interval",
+            "Applies a cap on concurrent open pull requests (open-pull-requests-limit)"
+          ],
+          "summary": "This file is a Dependabot configuration (version 2) that instructs Dependabot to manage dependency updates for GitHub Actions used in the repository. It targets the repository root (directory: /) and runs on a weekly schedule to check for new updates. The configuration also limits the number of simultaneously open Dependabot pull requests to 10.\n"
+        },
+        "schema_version": "2.0.0",
+        "tokens_input": 445,
+        "tokens_output": 288
+      },
+      "extraction_quality": "raw_source",
+      "generated_at": "2026-09-07T03:03:01Z",
+      "model": "gpt-5-mini",
+      "source_sha": "ff1ffd1355fe0cdd70497dff412770730f373e06"
+    }
+  },
+  "schema_version": "1.0.0"
+}
