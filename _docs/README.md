@@ -41,7 +41,7 @@ graph TD
     C1[dependabot.yml]
     C2[wai-docbot.yml]
     C0 --> C1
-    C1 --> C2
+    C0 --> C2
 ```
 
 ### 🏗️ Architecture
