@@ -1,4 +1,4 @@
-<!-- METADATA: {"source_path": ".github", "source_sha": "361bc7562784e8a3a8f17a0fc578d26fa67aeecb", "extraction_quality": "full_ast", "model": "gpt-5-mini", "generated_at": "2026-09-07T03:03:13Z", "doc_type": "directory"} -->
+<!-- METADATA: {"source_path": ".github", "source_sha": "361bc7562784e8a3a8f17a0fc578d26fa67aeecb", "extraction_quality": "full_ast", "model": "gpt-5-mini", "generated_at": "2026-09-07T03:16:31Z", "doc_type": "directory"} -->
 [Documentation Home](../README.md) > [.github](./README.md) > **.github**
 
 
@@ -11,16 +11,16 @@
 
 ## Purpose
 
-This directory holds repository-level configuration files that control dependency management and automated documentation generation for the project. The files declare behaviors that run on the repository root and shape how updates and pull-request documentation are produced and managed.
+The .github directory holds repository-level configuration used by GitHub-hosted automation and repository maintenance. It contains YAML configuration files that control automated dependency updates and the repository's documentation emission rules.
 
-The contents are focused on operational configuration rather than application code: one file configures Dependabot to keep GitHub Actions dependencies up to date, and the other configures how documentation is generated and placed for pull requests and selected branches.
+These files are intended to be edited by repository maintainers to adjust update cadence, pull request limits, documentation generation behavior, and which repository content is included or excluded from generated documentation.
 
 ## Files
 
 | File | Description |
 | --- | --- |
 | `dependabot.yml` | This file is a Dependabot configuration (version 2) that instructs Dependabot to manage dependency updates for GitHub Actions used in the repository. It targets the repository root (directory: /) and runs on a weekly schedule to check for new updates. The configuration also limits the number of simultaneously open Dependabot pull requests to 10. |
-| `wai-docbot.yml` | It specifies how documentation is generated for pull requests (output_mode), where generated documentation is placed (docs_folder), which target branches will trigger processing (allowed_base_branches), and a set of preferences that control details included in generated READMEs. The file also defines guide generation projects (guide_projects) to produce higher-level architecture guides and provides a per-directory override mechanism to tweak generation behavior for specific … |
+| `wai-docbot.yml` | It specifies how documentation is emitted (per-directory by default), per-directory overrides, the target documentation folder, which base branches trigger generation, documentation preferences such as inclusion of code links and examples, and a guide project entry for an overall architecture guide. The file also provides an explicit whitelist of file extensions to include in documentation and a comprehensive set of glob-style exclusions to prevent particular files, … |
 
 ## Subdirectories
 
@@ -34,12 +34,13 @@ Use these links to drill into the child directory READMEs for this section.
 
 ## Key Components
 
-- **`Dependabot configuration`** (in `dependabot.yml`) — This file defines the repository's automated dependency update policy for GitHub Actions, scheduling weekly checks and limiting concurrent Dependabot pull requests so maintainers have predictable and controlled updates to automation dependencies.
-- **`Documentation generation configuration`** (in `wai-docbot.yml`) — This file controls how documentation is produced and published for pull requests and certain branches, including output mode, destination folder, allowed base branches, README content preferences, and higher-level guide generation—making it the authoritative source for the repository's automated doc outputs.
+- **`Dependabot update policy`** (in `dependabot.yml`) — This configuration defines how and when dependency updates for GitHub Actions are discovered and opened as pull requests and sets the cap on concurrently open Dependabot PRs, making it the central control for automated dependency maintenance in the repository.
+- **`Documentation emission rules`** (in `wai-docbot.yml`) — This file governs how repository content is converted into emitted documentation, including per-directory defaults and overrides, target output location, and which branches trigger generation, so it is the primary control point for documentation output and behavior.
+- **`Documentation include/exclude filters`** (in `wai-docbot.yml`) — The whitelist of file extensions together with the comprehensive glob-style exclusions determine precisely which files are included in generated documentation and which are omitted, making these filters essential for controlling documentation scope and preventing undesirable files from being processed.
 
 ## Architecture Notes
 
-Readers should treat these files as independent configuration entry points: one governs automated updates to action dependencies, and the other governs how documentation is generated and where it is placed.
+Together they provide repository-level policies for automated updates and documentation generation but are maintained as distinct configuration responsibilities within .github.
 
 ---
 
