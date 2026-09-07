@@ -1,6 +1,6 @@
 # 📚 ArtazzenMobile Documentation
 
-Welcome to the complete documentation for this repository. This documentation is automatically generated and maintained by Woden Docbot.
+Welcome to the complete documentation for this repository. This documentation is automatically generated and maintained by Woden DocBot.
 
 ![Files Documented: 2](https://img.shields.io/badge/Files_Documented-2-blue) ![Coverage: 3%](https://img.shields.io/badge/Coverage-3%-orange) ![Last Updated: 2026-09-07](https://img.shields.io/badge/Last_Updated-2026--09--07-gray)
 
